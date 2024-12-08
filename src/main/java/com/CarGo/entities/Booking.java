@@ -1,6 +1,6 @@
 package com.CarGo.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.*; 
 
 @Entity
 @Table(name = "bookings")

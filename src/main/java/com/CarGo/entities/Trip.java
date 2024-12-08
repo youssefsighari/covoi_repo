@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "trips")
@@ -19,11 +20,18 @@ public class Trip {
     private LocalTime time;
     private int availableSeats;
     private BigDecimal pricePerPassenger;
+   
+    
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Booking> bookings;
+
     
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
-
+    
+    
+    
     // Getters et Setters
     public Long getId() {
         return id;

@@ -1,6 +1,15 @@
 package com.CarGo.entities;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+
+import java.util.ArrayList; 
+import java.util.List;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;  
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,7 +29,37 @@ public class Customer {
     private String phoneNumber;
     private String email;
     private String password;
+    
+   
+    @Lob // Annotation pour un champ Blob
+    private byte[] profilePhoto;
 
+
+    
+    @ElementCollection
+    @CollectionTable(name = "customer_mini_bios", joinColumns = @JoinColumn(name = "customer_id"))
+    @Column(name = "mini_bio")
+    private List<String> miniBios = new ArrayList<>();
+
+    
+    public List<String> getMiniBios() {
+        return miniBios;
+    } 
+
+    public void setMiniBios(List<String> miniBios) {
+        this.miniBios = miniBios;
+    }
+    
+    
+    
+    // Getters et Setters pour `profilePhoto`
+    public byte[] getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(byte[] profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
     // Getters and Setters
 
     public Long getId() {

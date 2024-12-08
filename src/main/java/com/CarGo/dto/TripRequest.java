@@ -6,6 +6,7 @@ import java.time.LocalTime;
 
 public class TripRequest {
 
+	private Long id; 
     private String departure;
     private String destination;
     private LocalDate date;
@@ -14,6 +15,14 @@ public class TripRequest {
     private BigDecimal pricePerPassenger;
     private Long customerId;
 
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     public String getDeparture() {
         return departure;
     }

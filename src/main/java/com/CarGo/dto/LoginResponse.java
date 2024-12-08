@@ -11,7 +11,7 @@ public class LoginResponse {
         this.firstName = firstName;
     }
 
-   
+    
     public String getJwt() {
         return jwt;
     }

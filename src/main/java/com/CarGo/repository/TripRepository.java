@@ -18,6 +18,11 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
 	
+	@Query("SELECT t FROM Trip t ORDER BY t.date ASC, t.time ASC")
+	List<Trip> findAllUpcomingTripsSortedByDateAndTime();
+
+
+	
 	 List<Trip> findByCustomer(Customer customer);
 
     

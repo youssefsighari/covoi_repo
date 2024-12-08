@@ -1,6 +1,6 @@
 package com.CarGo.configuration;
 
-import com.CarGo.filters.JwtAuthFilter;
+import com.CarGo.filters.JwtAuthFilter; 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +42,18 @@ public class WebSecurityConfiguration {
             .and()
             .authorizeHttpRequests()
             .requestMatchers("/signup", "/Login").permitAll()
+            
             .requestMatchers("/trips/**").authenticated()
+            
+            .requestMatchers("/api/customers/profile-photo/**").authenticated()
+            .requestMatchers("/api/customers/**").authenticated()
+            .requestMatchers("/api/customers/{id}/update-password**").authenticated()
+            .requestMatchers("/api/customers/{id}/add-minibio**").authenticated()
+            .requestMatchers("/api/customers/{id}/delete-minibio**").authenticated()
+            .requestMatchers("/api/customers/{id}/minibios**").authenticated()
+            
+           
+
             .anyRequest().authenticated()
             .and()
             .exceptionHandling()

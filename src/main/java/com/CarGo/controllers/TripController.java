@@ -40,11 +40,12 @@ public class TripController {
         return ResponseEntity.ok(trips);
     }  
 
-    @GetMapping("/allTrips") 
-    public ResponseEntity<List<Trip>> getAllTrips() { 
-        List<Trip> trips = tripService.getAllTrips();
+    @GetMapping("/allTrips")
+    public ResponseEntity<List<Trip>> getUpcomingTrips() {
+        List<Trip> trips = tripService.getUpcomingTrips();
         return ResponseEntity.ok(trips);
     }
+
     
     @GetMapping("/search")
     public ResponseEntity<List<Trip>> searchTrips(
@@ -137,6 +138,17 @@ public class TripController {
         return ResponseEntity.ok().build();
     }
     
+    
+    
+    @PutMapping("/update/{id}")
+    public ResponseEntity<TripRequest> updateTrip(
+            @PathVariable Long id,
+            @RequestBody TripRequest tripRequest,
+            @RequestHeader("Authorization") String token) {
+        TripRequest response = tripService.updateTrip(id, tripRequest, token);
+        return ResponseEntity.ok(response);
+    }
+
      
     
     

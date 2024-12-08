@@ -1,6 +1,7 @@
 package com.CarGo.services;
 
 import com.CarGo.entities.Trip;
+import com.CarGo.Utils.JwtUtils;
 import com.CarGo.dto.TripRequest;
 import com.CarGo.entities.Booking;
 import com.CarGo.entities.Customer;
@@ -26,6 +27,8 @@ public class TripService {
     private final TripRepository tripRepository;
     private final BookingRepository bookingRepository;
     private final CustomerRepository customerRepository;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Autowired
     public TripService(TripRepository tripRepository, BookingRepository bookingRepository, CustomerRepository customerRepository) {
@@ -53,10 +56,11 @@ public class TripService {
         return tripRepository.save(trip);
     }
 
-    public List<Trip> getAllTrips() {
-        return tripRepository.findAll();
+    public List<Trip> getUpcomingTrips() {
+        return tripRepository.findAllUpcomingTripsSortedByDateAndTime();
     }
-    
+
+
     public List<Trip> getTripsByCustomer(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found with id: " + customerId));
@@ -179,6 +183,54 @@ public class TripService {
     
     
     
+    @Transactional
+    public TripRequest updateTrip(Long tripId, TripRequest tripRequest, String token) {
+        System.out.println("Updating trip with ID: " + tripId);
+
+        // Rechercher le trip à mettre à jour
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new RuntimeException("Trip not found with id: " + tripId));
+
+        // Extraire l'utilisateur connecté depuis le token JWT
+        String customerEmail = jwtUtils.extractUsername(token.substring(7));
+        Customer customer = customerRepository.findByEmail(customerEmail)
+                .orElseThrow(() -> new RuntimeException("Customer not found with email: " + customerEmail));
+
+        // Vérifier que le client connecté est bien le propriétaire du trip
+        if (!trip.getCustomer().getId().equals(customer.getId())) {
+            throw new RuntimeException("You are not authorized to update this trip.");
+        }
+
+        // Mettre à jour les champs du trip
+        trip.setDeparture(tripRequest.getDeparture());
+        trip.setDestination(tripRequest.getDestination());
+        trip.setDate(tripRequest.getDate());
+        trip.setTime(tripRequest.getTime());
+        trip.setAvailableSeats(tripRequest.getAvailableSeats());
+        trip.setPricePerPassenger(tripRequest.getPricePerPassenger());
+
+        // Sauvegarder les modifications
+        Trip updatedTrip = tripRepository.save(trip);
+
+        // Préparer la réponse TripRequest avec customerId
+        TripRequest response = new TripRequest();
+        response.setId(updatedTrip.getId());
+        response.setDeparture(updatedTrip.getDeparture());
+        response.setDestination(updatedTrip.getDestination());
+        response.setDate(updatedTrip.getDate());
+        response.setTime(updatedTrip.getTime());
+        response.setAvailableSeats(updatedTrip.getAvailableSeats());
+        response.setPricePerPassenger(updatedTrip.getPricePerPassenger());
+
+        // Assurez-vous de bien peupler le customerId
+        response.setCustomerId(updatedTrip.getCustomer().getId());
+
+        return response;
+    }
+
+
+
+
     
     
     
